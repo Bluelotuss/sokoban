@@ -72,32 +72,96 @@ function getPlayerPosX(array) {
 }
 
 function movePlayer(yPos, xPos) {
-  posPlayerY = posPlayerY + yPos;
-  posPlayerX = posPlayerX + xPos;
+  let oldID = "y" + posPlayerY + "x" + posPlayerX;
+  let newID = "y" + (posPlayerY + yPos) + "x" + (posPlayerX + xPos);
+  let secondNewID =
+    "y" + (posPlayerY + yPos * 2) + "x" + (posPlayerX + xPos * 2);
+  let thirdNewID =
+    "y" + (posPlayerY + yPos * 3) + "x" + (posPlayerX + xPos * 3);
+  let currentPos = document.getElementById(oldID);
+  let newPos = document.getElementById(newID);
+  let secondNewPos = document.getElementById(secondNewID);
+  let thirdNewPos = document.getElementById(thirdNewID);
+
+  if (newPos.classList.contains("emptyTile")) {
+    if (currentPos.classList.contains("goalArea")) {
+      currentPos.classList.remove("player");
+      newPos.classList.add("player");
+      newPos.classList.remove("emptyTile");
+
+      posPlayerY = posPlayerY + yPos;
+      posPlayerX = posPlayerX + xPos;
+    } else {
+      currentPos.classList.remove("player");
+      currentPos.classList.add("emptyTile");
+      newPos.classList.add("player");
+      newPos.classList.remove("emptyTile");
+
+      posPlayerY = posPlayerY + yPos;
+      posPlayerX = posPlayerX + xPos;
+    }
+  } else if (
+    newPos.classList.contains("movableBlock") &&
+    secondNewPos.classList.contains("emptyTile")
+  ) {
+    currentPos.classList.remove("player");
+    currentPos.classList.add("emptyTile");
+    newPos.classList.remove("movableBlock");
+    newPos.classList.add("player");
+    secondNewPos.classList.add("movableBlock");
+    secondNewPos.classList.remove("emptyTile");
+
+    posPlayerY = posPlayerY + yPos;
+    posPlayerX = posPlayerX + xPos;
+  } else if (
+    newPos.classList.contains("movableBlock") &&
+    secondNewPos.classList.contains("goalArea") &&
+    !secondNewPos.classList.contains("movableBlock")
+  ) {
+    if (
+      newPos.classList.contains("movableBlock") &&
+      secondNewPos.classList.contains("goalArea") &&
+      thirdNewPos.classList.contains("wall")
+    ) {
+      currentPos.classList.remove("player");
+      currentPos.classList.add("emptyTile");
+      newPos.classList.add("player");
+      newPos.classList.remove("movableBlock");
+      secondNewPos.classList.add("movableBlock");
+
+      posPlayerY = posPlayerY + yPos;
+      posPlayerX = posPlayerX + xPos;
+    } else {
+      currentPos.classList.remove("player");
+      currentPos.classList.add("emptyTile");
+
+      newPos.classList.add("player");
+      newPos.classList.remove("movableBlock");
+
+      secondNewPos.classList.add("movableBlock");
+
+      posPlayerY = posPlayerY + yPos;
+      posPlayerX = posPlayerX + xPos;
+    }
+  } else if (
+    newPos.classList.contains("goalArea") &&
+    !newPos.classList.contains("movableBlock")
+  ) {
+    if (secondNewPos.classList.contains("goalArea")) {
+      currentPos.classList.remove("player");
+      currentPos.classList.add("emptyTile");
+      newPos.classList.add("player");
+      posPlayerY = posPlayerY + yPos;
+      posPlayerX = posPlayerX + xPos;
+    } else {
+      currentPos.classList.remove("player");
+      newPos.classList.add("player");
+
+      posPlayerY = posPlayerY + yPos;
+      posPlayerX = posPlayerX + xPos;
+    }
+  }
 }
-
-// function checkIfBlocksAtG(goalArray) {
-// for (let i = 0; i < goalArray.length; i++) {
-//   const element = array[index];
-
-// }
-// }
-
-// function findPlayerAddEmptyTile() {
-//   var els = document.getElementsByClassName("player");
-//   for (var i = 0; i < els.length; i++) {
-//     els[i].classList.add("emptyTile");
-//   }
-// }
-// findPlayerAddEmptyTile();
-
-// function findBlocksAddEmptyTile() {
-//   var els = document.getElementsByClassName("movableBlock");
-//   for (var i = 0; i < els.length; i++) {
-//     els[i].classList.add("emptyTile");
-//   }
-// }
-// findBlocksAddEmptyTile();
 
 function findAllG() {
   let goalPos = [];
@@ -118,7 +182,9 @@ function isWin() {
     }
   }
   if (win) {
-    window.alert("you won");
+    let text = document.createElement("h1");
+    text.innerText = "Congratulations, you made it";
+    document.body.appendChild(text);
   }
 } //end of isWin
 
@@ -130,236 +196,20 @@ function KD(e) {
 window.addEventListener("keyup", (e) => {
   switch (e.key) {
     case "ArrowLeft":
-      let oldIDL = "y" + posPlayerY + "x" + posPlayerX;
-      let newIDL = "y" + posPlayerY + "x" + (posPlayerX - 1);
-      let secondNewIDL = "y" + posPlayerY + "x" + (posPlayerX - 2);
-      let prevIDL = "y" + posPlayerY + "x" + (posPlayerX + 1);
-      let secondPrevIDL = "y" + posPlayerY + "x" + (posPlayerX + 2);
-      let upperIDL = "y" + (posPlayerY - 1) + "x" + posPlayerX;
-
-      let currentPosL = document.getElementById(oldIDL);
-      let newPosL = document.getElementById(newIDL);
-      let secondNewPosL = document.getElementById(secondNewIDL);
-      let prevPosL = document.getElementById(prevIDL);
-      let secondPrevPosL = document.getElementById(secondPrevIDL);
-      let upperPosL = document.getElementById(upperIDL);
-      if (
-        newPosL.classList.contains("movableBlock") &&
-        secondNewPosL.classList.contains("emptyTile")
-      ) {
-        currentPosL.classList.remove("player");
-        currentPosL.classList.add("emptyTile");
-        newPosL.classList.remove("movableBlock");
-        newPosL.classList.add("player");
-
-        secondNewPosL.classList.add("movableBlock");
-        secondNewPosL.classList.remove("emptyTile");
-        movePlayer(0, -1);
-        break;
-      } else if (newPosL.classList.contains("emptyTile")) {
-        if (currentPosL.classList.contains("goalArea")) {
-          currentPosL.classList.remove("player");
-          newPosL.classList.add("player");
-          newPosL.classList.remove("emptyTile");
-
-          movePlayer(0, -1);
-          break;
-        }
-        currentPosL.classList.remove("player");
-        currentPosL.classList.add("emptyTile");
-        newPosL.classList.add("player");
-        newPosL.classList.remove("emptyTile");
-
-        movePlayer(0, -1);
-        break;
-      } else if (newPosL.classList.contains("goalArea")) {
-        currentPosL.classList.remove("player");
-        newPosL.classList.add("player");
-
-        movePlayer(0, -1);
-        break;
-      }
-
+      movePlayer(0, -1);
+      isWin();
       break;
     case "ArrowRight":
-      let oldIDR = "y" + posPlayerY + "x" + posPlayerX;
-      let newIDR = "y" + posPlayerY + "x" + (posPlayerX + 1);
-      let secondNewIDR = "y" + posPlayerY + "x" + (posPlayerX + 2);
-      let thirdNewIDR = "y" + posPlayerY + "x" + (posPlayerX + 3);
-      let prevIDR = "y" + posPlayerY + "x" + (posPlayerX - 1);
-
-      let currentPosR = document.getElementById(oldIDR);
-      let newPosR = document.getElementById(newIDR);
-      let secondNewPosR = document.getElementById(secondNewIDR);
-      let thirdNewPosR = document.getElementById(thirdNewIDR);
-      let prevPosR = document.getElementById(prevIDR);
-      if (
-        newPosR.classList.contains("movableBlock") &&
-        secondNewPosR.classList.contains("emptyTile")
-      ) {
-        currentPosR.classList.remove("player");
-        currentPosR.classList.add("emptyTile");
-
-        newPosR.classList.add("player");
-        newPosR.classList.remove("movableBlock");
-        secondNewPosR.classList.add("movableBlock");
-        secondNewPosR.classList.remove("emptyTile");
-
-        movePlayer(0, 1);
-        break;
-      } else if (newPosR.classList.contains("emptyTile")) {
-        currentPosR.classList.remove("player");
-        currentPosR.classList.add("emptyTile");
-        newPosR.classList.add("player");
-        newPosR.classList.remove("emptyTile");
-
-        movePlayer(0, 1);
-        break;
-      } else if (
-        newPosR.classList.contains("movableBlock") &&
-        secondNewPosR.classList.contains("wall")
-      ) {
-        break;
-      } else if (
-        newPosR.classList.contains("movableBlock") &&
-        secondNewPosR.classList.contains("movableBlock")
-      ) {
-        break;
-      } else if (
-        newPosR.classList.contains("movableBlock") &&
-        secondNewPosR.classList.contains("goalArea")
-      ) {
-        if (
-          newPosR.classList.contains("movableBlock") &&
-          secondNewPosR.classList.contains("goalArea") &&
-          thirdNewPosR.classList.contains("wall")
-        ) {
-          currentPosR.classList.remove("player");
-          currentPosR.classList.add("emptyTile");
-          newPosR.classList.add("player");
-          newPosR.classList.remove("movableBlock");
-          secondNewPosR.classList.add("movableBlock");
-          movePlayer(0, 1);
-          break;
-        }
-        currentPosR.classList.remove("player");
-        currentPosR.classList.add("emptyTile");
-
-        newPosR.classList.add("player");
-        newPosR.classList.remove("movableBlock");
-
-        secondNewPosR.classList.add("movableBlock");
-        //secondNewPosR.classList.remove("goalArea");
-
-        movePlayer(0, 1);
-        break;
-      } else if (newPosR.classList.contains("goalArea")) {
-        if (secondNewPosR.classList.contains("goalArea")) {
-          currentPosR.classList.remove("player");
-          currentPosR.classList.add("emptyTile");
-          newPosR.classList.add("player");
-          movePlayer(0, 1);
-          break;
-        }
-        currentPosR.classList.remove("player");
-        //currentPosR.classList.add("emptyTile");
-        //newPosR.classList.remove("goalArea");
-        newPosR.classList.add("player");
-
-        movePlayer(0, 1);
-        break;
-      } else if (newPosR.classList.contains("goalArea")) {
-        currentPosR.classList.remove("player");
-        newPosR.classList.add("player");
-
-        movePlayer(0, 1);
-        break;
-      }
-
+      movePlayer(0, 1);
+      isWin();
       break;
     case "ArrowUp":
-      let oldIDU = "y" + posPlayerY + "x" + posPlayerX;
-      let newIDU = "y" + (posPlayerY - 1) + "x" + posPlayerX;
-      let secondNewIDU = "y" + (posPlayerY - 2) + "x" + posPlayerX;
-
-      let currentPosU = document.getElementById(oldIDU);
-      let newPosU = document.getElementById(newIDU);
-      let secondNewPosU = document.getElementById(secondNewIDU);
-      if (
-        newPosU.classList.contains("movableBlock") &&
-        secondNewPosU.classList.contains("emptyTile")
-      ) {
-        currentPosU.classList.remove("player");
-        currentPosU.classList.add("emptyTile");
-        newPosU.classList.remove("movableBlock");
-        newPosU.classList.add("player");
-
-        secondNewPosU.classList.add("movableBlock");
-        secondNewPosU.classList.remove("emptyTile");
-
-        movePlayer(-1, 0);
-        break;
-      } else if (newPosU.classList.contains("emptyTile")) {
-        currentPosU.classList.remove("player");
-        currentPosU.classList.add("emptyTile");
-        newPosU.classList.add("player");
-        newPosU.classList.remove("emptyTile");
-
-        movePlayer(-1, 0);
-        break;
-      } else if (newPosU.classList.contains("goalArea")) {
-        currentPosU.classList.remove("player");
-        newPosU.classList.add("player");
-
-        movePlayer(-1, 0);
-        break;
-      }
-      // if (newPosU.classList.contains("goalArea")) {
-      //   currentPosU.classList.remove("player");
-      //   currentPosU.classList.add("goalArea");
-      //   newPosU.classList.remove("goalArea");
-      //   newPosU.classList.add("player");
-
-      //   posPlayerY = posPlayerY - 1;
-      //   posPlayerX = posPlayerX;
-      // }
-
+      movePlayer(-1, 0);
+      isWin();
       break;
     case "ArrowDown":
-      let oldIDD = "y" + posPlayerY + "x" + posPlayerX;
-      let newIDD = "y" + (posPlayerY + 1) + "x" + posPlayerX;
-      let secondNewIDD = "y" + (posPlayerY + 2) + "x" + posPlayerX;
-
-      let currentPosD = document.getElementById(oldIDD);
-      let newPosD = document.getElementById(newIDD);
-      let secondNewPosD = document.getElementById(secondNewIDD);
-      if (newPosD.classList.contains("emptyTile")) {
-        currentPosD.classList.remove("player");
-        currentPosD.classList.add("emptyTile");
-        newPosD.classList.add("player");
-
-        movePlayer(1, 0);
-      } else if (
-        newPosD.classList.contains("movableBlock") &&
-        secondNewPosD.classList.contains("emptyTile")
-      ) {
-        currentPosD.classList.remove("player");
-        currentPosD.classList.add("emptyTile");
-
-        newPosD.classList.add("player");
-        newPosD.classList.remove("movableBlock");
-        secondNewPosD.classList.add("movableBlock");
-        secondNewPosD.classList.remove("emptyTile");
-
-        movePlayer(1, 0);
-      } else if (newPosD.classList.contains("goalArea")) {
-        currentPosD.classList.remove("player");
-        newPosD.classList.add("player");
-
-        movePlayer(1, 0);
-        break;
-      }
+      movePlayer(1, 0);
+      isWin();
       break;
   }
-  isWin();
 });
