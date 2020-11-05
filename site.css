@@ -1,0 +1,39 @@
+.wall {
+  height: 7vh;
+  width: 2.5vw;
+  background-color: red;
+  float: left;
+}
+
+.emptyTile {
+  height: 7vh;
+  width: 2.5vw;
+  background-color: white;
+  float: left;
+}
+
+.goalArea {
+  height: 7vh;
+  width: 2.5vw;
+  background-color: yellow;
+  float: left;
+}
+
+.player {
+  height: 7vh;
+  width: 2.5vw;
+  background-color: black;
+  float: left;
+}
+
+.movableBlock {
+  height: 7vh;
+  width: 2.5vw;
+  background-color: brown;
+  float: left;
+}
+
+/* body {
+  min-width: 1200px;
+  min-height: 800px;
+} */
